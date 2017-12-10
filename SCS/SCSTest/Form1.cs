@@ -32,22 +32,29 @@ namespace SCSTest
             ChannelServices.RegisterChannel(new TcpChannel(port),false);
             RemotingConfiguration.RegisterWellKnownServiceType(typeof(NetworkScreen), "NetworkScreen.rem", WellKnownObjectMode.SingleCall);
             screen = new NetworkScreen();
-
+            
             //timer1.Start();
         }
 
         private void Timer1_Tick(object sender, EventArgs e)
         {
-            if (wait_task.Status == TaskStatus.RanToCompletion)
+            if(wait_tasks.Count < max_length)
             {
+                wait_tasks.Add(Task.Run(new Func<Bitmap>(AsyncGetImage)));
+            }
 
-                pictureBox1.Image = wait_task.Result;
-                wait_task = Task.Run(new Func<Bitmap>(AsyncGetImage));
-            }
-            else if(wait_task.Status == TaskStatus.Faulted)
+            if (wait_tasks[0].Status == TaskStatus.RanToCompletion)
             {
-                timer1.Stop();
+                pictureBox1.Image = wait_tasks[0].Result;
+                wait_tasks.RemoveAt(0);
+                wait_tasks.Add(Task.Run(new Func<Bitmap>(AsyncGetImage)));
             }
+            else if(wait_tasks[0].Status == TaskStatus.Faulted)
+            {
+                wait_tasks.RemoveAt(0);
+            }
+
+            
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -55,13 +62,14 @@ namespace SCSTest
             RemotingConfiguration.RegisterWellKnownClientType(typeof(NetworkScreen), "tcp://" + textBox1.Text + ":" + port + "/NetworkScreen.rem");
             screen = new NetworkScreen();
 
-            wait_task = Task.Run(new Func<Bitmap>(AsyncGetImage));
+            wait_tasks.Add(Task.Run(new Func<Bitmap>(AsyncGetImage)));
 
             timer1.Start();
         }
 
         Bitmap AsyncGetImage()
         {
+            
             MemoryStream mem = new MemoryStream();
             byte[] arr = screen.GetScreen();
             mem.Write(arr, 0, arr.Length);
@@ -69,6 +77,7 @@ namespace SCSTest
             return new Bitmap(mem);
         }
 
-        Task<Bitmap> wait_task;
+        int max_length = 10;
+        List< Task<Bitmap>> wait_tasks = new List<Task<Bitmap>>();
     }
 }
