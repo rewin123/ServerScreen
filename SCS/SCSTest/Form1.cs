@@ -38,19 +38,37 @@ namespace SCSTest
 
         private void Timer1_Tick(object sender, EventArgs e)
         {
-            MemoryStream mem = new MemoryStream();
-            byte[] arr = screen.GetScreen();
-            mem.Write(arr, 0, arr.Length);
-            mem.Position = 0;
-            pictureBox1.Image = new Bitmap(mem);
+            if (wait_task.Status == TaskStatus.RanToCompletion)
+            {
+
+                pictureBox1.Image = wait_task.Result;
+                wait_task.Start();
+            }
+            else if(wait_task.Status == TaskStatus.Faulted)
+            {
+                timer1.Stop();
+            }
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            RemotingConfiguration.RegisterWellKnownClientType(typeof(NetworkScreen), "tcp://localhost:" + port + "/NetworkScreen.rem");
+            RemotingConfiguration.RegisterWellKnownClientType(typeof(NetworkScreen), "tcp://" + textBox1.Text + ":" + port + "/NetworkScreen.rem");
             screen = new NetworkScreen();
+
+            wait_task = Task.Run(new Func<Bitmap>(AsyncGetImage));
 
             timer1.Start();
         }
+
+        Bitmap AsyncGetImage()
+        {
+            MemoryStream mem = new MemoryStream();
+            byte[] arr = screen.GetScreen();
+            mem.Write(arr, 0, arr.Length);
+            mem.Position = 0;
+            return new Bitmap(mem);
+        }
+
+        Task<Bitmap> wait_task;
     }
 }

@@ -14,7 +14,7 @@ namespace ClientCore
         public byte[] GetScreen()
         {
             MemoryStream mem = new MemoryStream();
-             Screenshot.MakeScreenshot().Save(mem,ImageFormat.Png);
+            Screenshot.MakeScreenshot().Save(mem,ImageFormat.Png);
             byte[] arr = new byte[mem.Length];
             mem.Position = 0;
             mem.Read(arr, 0, (int)mem.Length);
