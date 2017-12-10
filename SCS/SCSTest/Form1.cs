@@ -30,8 +30,11 @@ namespace SCSTest
         private void Button1_Click_1(object sender, EventArgs e)
         {
             TcpListener list = new TcpListener(port);
+            list.Start();
             var client = list.AcceptTcpClient();
             screen = new ScreenStreamSend(client.GetStream());
+
+            timer1.Start();
         }
 
         private void Timer1_Tick(object sender, EventArgs e)
