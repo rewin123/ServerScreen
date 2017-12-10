@@ -36,10 +36,15 @@ namespace ClientCore
                 long l = (long)form.Deserialize(stream);
                 int length = (int)l;
                 byte[] arr = new byte[length];
-                while (!stream.DataAvailable)
-                    ;
+                int readed = 0;
+                while (readed < length)
+                {
+                    while (!stream.DataAvailable)
+                        ;
+                    stream.Read(arr, readed, length - readed);
+                }
                 MemoryStream mem = new MemoryStream();
-                stream.Read(arr, 0, length);
+                //stream.Read(arr, 0, length);
                 mem.Write(arr, 0, length);
                 //Bitmap map = (Bitmap)form.Deserialize(stream);
                 var map = new Bitmap(mem);
