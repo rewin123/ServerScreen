@@ -41,7 +41,7 @@ namespace ClientCore
                 {
                     while (!stream.DataAvailable)
                         ;
-                    stream.Read(arr, readed, length - readed);
+                    readed += stream.Read(arr, readed, length - readed);
                 }
                 MemoryStream mem = new MemoryStream();
                 //stream.Read(arr, 0, length);
