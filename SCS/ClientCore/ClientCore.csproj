@@ -45,6 +45,9 @@
     <Compile Include="Class1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Screenshot.cs" />
+    <Compile Include="ScreenStream.cs" />
+    <Compile Include="ScreenStreamSend.cs" />
+    <Compile Include="ScreenStreamGet.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
