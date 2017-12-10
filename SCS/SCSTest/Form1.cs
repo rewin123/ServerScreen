@@ -42,7 +42,7 @@ namespace SCSTest
             {
 
                 pictureBox1.Image = wait_task.Result;
-                wait_task.Start();
+                wait_task = Task.Run(new Func<Bitmap>(AsyncGetImage));
             }
             else if(wait_task.Status == TaskStatus.Faulted)
             {
