@@ -9,7 +9,7 @@ namespace ClientCore
 {
     public abstract class ScreenStream
     {
-        public ScreenStream(NetworkStream stream)
+        public ScreenStream(UdpClient stream)
         {
 
         }

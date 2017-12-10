@@ -29,10 +29,7 @@ namespace SCSTest
 
         private void Button1_Click_1(object sender, EventArgs e)
         {
-            TcpListener list = new TcpListener(port);
-            list.Start();
-            var client = list.AcceptTcpClient();
-            screen = new ScreenStreamSend(client.GetStream());
+            screen = new ScreenStreamSend(new UdpClient(port));
 
             timer1.Start();
         }
@@ -44,8 +41,8 @@ namespace SCSTest
 
         private void button2_Click(object sender, EventArgs e)
         {
-            TcpClient client = new TcpClient(textBox1.Text, port);
-            screen = new ScreenStreamGet(client.GetStream(),pictureBox1);
+            IPEndPoint point = new IPEndPoint(IPAddress.Parse(textBox1.Text), port);
+            screen = new ScreenStreamGet(new UdpClient(textBox1.Text, port),pictureBox1, ref point);
 
             timer1.Start();
         }
