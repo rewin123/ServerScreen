@@ -53,6 +53,16 @@ namespace SCSTest
             {
                 wait_tasks.RemoveAt(0);
             }
+            else if(wait_tasks.Count > 1)
+            {
+                if(wait_tasks[1].IsCompleted)
+                {
+                    wait_tasks.RemoveAt(0);
+                    pictureBox1.Image = wait_tasks[0].Result;
+                    wait_tasks.RemoveAt(0);
+                    wait_tasks.Add(Task.Run(new Func<Bitmap>(AsyncGetImage)));
+                }
+            }
 
             
         }
