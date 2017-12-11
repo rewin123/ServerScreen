@@ -23,6 +23,8 @@ namespace ClientCore
             this.stream = stream;
             this.box = box;
             this.point = point;
+
+            stream.Connect(point);
         }
 
         public override void Tick()
